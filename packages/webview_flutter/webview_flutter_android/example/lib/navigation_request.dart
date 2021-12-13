@@ -4,7 +4,7 @@
 
 /// Information about a navigation action that is about to be executed.
 class NavigationRequest {
-  NavigationRequest._({required this.url, required this.isForMainFrame});
+  NavigationRequest({required this.url, required this.isForMainFrame});
 
   /// The URL that will be loaded if the navigation is executed.
   final String url;

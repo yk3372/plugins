@@ -23,7 +23,7 @@ typedef void WebViewCreatedCallback(WebViewController controller);
 /// `navigation` should be handled.
 ///
 /// See also: [WebView.navigationDelegate].
-typedef FutureOr<NavigationDecision> NavigationDelegate(
+typedef NavigationDecision NavigationDelegate(
     NavigationRequest navigation);
 
 /// Signature for when a [WebView] has started loading a page.
@@ -312,16 +312,16 @@ class _PlatformCallbacksHandler implements WebViewPlatformCallbacksHandler {
   final WebView _webView;
 
   @override
-  FutureOr<bool> onNavigationRequest({
+  bool onNavigationRequest({
     required String url,
     required bool isForMainFrame,
-  }) async {
-    if (url.startsWith('https://www.youtube.com/')) {
-      print('blocking navigation to $url');
-      return false;
-    }
-    print('allowing navigation to $url');
-    return true;
+  }) {
+    final bool allowNavigation = _webView.navigationDelegate == null ||
+        _webView.navigationDelegate!(
+              NavigationRequest(url: url, isForMainFrame: isForMainFrame),
+            ) ==
+            NavigationDecision.navigate;
+    return allowNavigation;
   }
 
   @override

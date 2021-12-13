@@ -11,6 +11,8 @@ import 'package:flutter/material.dart';
 import 'package:webview_flutter_android/webview_surface_android.dart';
 import 'package:webview_flutter_platform_interface/webview_flutter_platform_interface.dart';
 
+import 'navigation_decision.dart';
+import 'navigation_request.dart';
 import 'web_view.dart';
 
 void main() {
@@ -62,13 +64,22 @@ class _WebViewExampleState extends State<_WebViewExample> {
       // to allow calling Scaffold.of(context) so we can show a snackbar.
       body: Builder(builder: (context) {
         return WebView(
-          initialUrl: 'https://flutter.dev',
+          initialUrl: 'https://www.baidu.com',
           onWebViewCreated: (WebViewController controller) {
             _controller.complete(controller);
           },
           javascriptChannels: _createJavascriptChannels(context),
           javascriptMode: JavascriptMode.unrestricted,
           userAgent: 'Custom_User_Agent',
+          navigationDelegate: (NavigationRequest request) {
+            if (request.url.startsWith('https://www.baidu.com/')) {
+              print('yk3372~ blocking');
+              return NavigationDecision.prevent;
+            }
+            print('yk3372~ allowing');
+            return NavigationDecision.navigate;
+          },
+          gestureNavigationEnabled: true,
         );
       }),
       floatingActionButton: favoriteButton(),
